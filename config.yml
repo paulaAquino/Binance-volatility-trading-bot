@@ -2,7 +2,7 @@
 script_options:
   # Switch between testnet and mainnet
   # Setting this to False will use REAL funds, use at your own risk
-  TEST_MODE: True
+  TEST_MODE: False
   LOG_TRADES: True
   LOG_FILE: 'trades.txt'
 
@@ -50,7 +50,7 @@ trading_options:
   STOP_LOSS: 50
 
   # define in % when to take profit on a profitable coin.
-  TAKE_PROFIT: .5
+  TAKE_PROFIT: .8
 
   # Use custom tickers.txt list for filtering pairs.
   CUSTOM_LIST: True

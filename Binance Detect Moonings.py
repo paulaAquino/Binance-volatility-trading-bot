@@ -67,8 +67,9 @@ class txcolors:
 
 
 # tracks profit/loss each session
-global session_profit
+global session_profit, session_usd_profit
 session_profit = 0
+session_usd_profit = 0
 
 
 # print with timestamps
@@ -141,7 +142,7 @@ def wait_for_price():
         # sleep for exactly the amount of time required
         time.sleep((timedelta(minutes=float(TIME_DIFFERENCE / RECHECK_INTERVAL)) - (datetime.now() - historical_prices[hsp_head]['BNB' + PAIR_WITH]['time'])).total_seconds())
 
-    print(f'Working...Session profit:{session_profit:.2f}% Est:${(QUANTITY * session_profit)/100:.2f}')
+    print(f'Working...Session profit:{session_profit:.2f}% Est:${session_usd_profit:.2f}')
 
     # retreive latest prices
     get_price()
@@ -216,7 +217,7 @@ def external_signals():
 
 def pause_bot():
     '''Pause the script when exeternal indicators detect a bearish trend in the market'''
-    global bot_paused, session_profit, hsp_head
+    global bot_paused, session_profit, hsp_head, session_usd_profit
 
     # start counting for how long the bot's been paused
     start_time = time.perf_counter()
@@ -233,7 +234,7 @@ def pause_bot():
         get_price(True)
 
         # pausing here
-        if hsp_head == 1: print(f'Paused...Session profit:{session_profit:.2f}% Est:${(QUANTITY * session_profit)/100:.2f}')
+        if hsp_head == 1: print(f'Paused...Session profit:{session_profit:.2f}% Est:${session_usd_profit:.2f}')
         time.sleep((TIME_DIFFERENCE * 60) / RECHECK_INTERVAL)
 
     else:
@@ -343,8 +344,6 @@ def buy():
                     # Log trade
                     if LOG_TRADES:
                         write_log(f"Buy : {volume[coin]} {coin} - {last_price[coin]['price']}")
-
-
         else:
             print(f'Signal detected, but there is already an active trade on {coin}')
 
@@ -354,7 +353,7 @@ def buy():
 def sell_coins():
     '''sell coins that have reached the STOP LOSS or TAKE PROFIT threshold'''
 
-    global hsp_head, session_profit
+    global hsp_head, session_profit, session_usd_profit
 
     last_price = get_price(False) # don't populate rolling window
     #last_price = get_price(add_to_historical=True) # don't populate rolling window
@@ -410,13 +409,15 @@ def sell_coins():
                 if LOG_TRADES:
                     profit = ((LastPrice - BuyPrice) * coins_sold[coin]['volume'])* (1-(TRADING_FEE*2)) # adjust for trading fee here
                     write_log(f"Sell: {coins_sold[coin]['volume']} {coin} - {BuyPrice} - {LastPrice} Profit: {profit:.2f} {PriceChange-(TRADING_FEE*2):.2f}%")
+                    session_usd_profit = session_usd_profit + profit
                     session_profit=session_profit + (PriceChange-(TRADING_FEE*2))
             continue
 
         # no action; print once every TIME_DIFFERENCE
         if hsp_head == 1:
             if len(coins_bought) > 0:
-                print(f'TP or SL not yet reached, not selling {coin} for now {BuyPrice} - {LastPrice} : {txcolors.SELL_PROFIT if PriceChange >= 0. else txcolors.SELL_LOSS}{PriceChange-(TRADING_FEE*2):.2f}% Est:${(QUANTITY*(PriceChange-(TRADING_FEE*2)))/100:.2f}{txcolors.DEFAULT}')
+                usd_profit = ((LastPrice - BuyPrice) * coins_bought[coin]['volume']) * (1-(TRADING_FEE*2)) # adjust for trading fee here
+                print(f'TP or SL not yet reached, not selling {coin} for now {BuyPrice} - {LastPrice} : {txcolors.SELL_PROFIT if PriceChange >= 0. else txcolors.SELL_LOSS}{PriceChange-(TRADING_FEE*2):.2f}% Est:${usd_profit:.2f}{txcolors.DEFAULT}')
 
     if hsp_head == 1 and len(coins_bought) == 0: print(f'Not holding any coins')
  

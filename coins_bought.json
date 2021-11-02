@@ -1,0 +1,47 @@
+{
+    "XMRUSDT": {
+        "symbol": "XMRUSDT",
+        "orderid": 925703059,
+        "timestamp": 1635735972237,
+        "bought_at": "276.50000000",
+        "volume": 0.362,
+        "stop_loss": -50,
+        "take_profit": 0.15
+    },
+    "AVAXUSDT": {
+        "symbol": "AVAXUSDT",
+        "orderid": 925703000,
+        "timestamp": 1635735972207,
+        "bought_at": "69.28000000",
+        "volume": 2.36635,
+        "stop_loss": -50,
+        "take_profit": 0.1
+    },
+    "SHIBUSDT": {
+        "symbol": "SHIBUSDT",
+        "orderid": 925703002,
+        "timestamp": 1635735972207,
+        "bought_at": "0.00007394",
+        "volume": 1439699.59,
+        "stop_loss": -50,
+        "take_profit": 0.2
+    },
+    "LTCUSDT": {
+        "symbol": "LTCUSDT",
+        "orderid": 2453569775,
+        "timestamp": 1635860201310,
+        "bought_at": "201.30000000",
+        "volume": 0.497,
+        "stop_loss": -50,
+        "take_profit": 0.5
+    },
+    "BTCUSDT": {
+        "symbol": "BTCUSDT",
+        "orderid": 8135699486,
+        "timestamp": 1635861825212,
+        "bought_at": "63473.14000000",
+        "volume": 0.00158,
+        "stop_loss": -50,
+        "take_profit": 0.5
+    }
+}
