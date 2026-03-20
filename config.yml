@@ -2,7 +2,7 @@
 script_options:
   # Switch between testnet and mainnet
   # Setting this to False will use REAL funds, use at your own risk
-  TEST_MODE: False
+  TEST_MODE: True
   LOG_TRADES: True
   LOG_FILE: 'trades.txt'
 
@@ -13,6 +13,11 @@ script_options:
 
 # These options apply to the trading methods the script executes
 trading_options:
+  # Proteção contra dump rápido
+  FAST_DUMP_PROTECTION:
+    ENABLED: True
+    THRESHOLD_DROP: 2    # porcentagem de queda para considerar dump
+    WINDOW: 3            # número de candles/minutos para analisar
  
   # select your base currency to use for trading (trade for example USDT pairs)
   PAIR_WITH: USDT
@@ -34,23 +39,23 @@ trading_options:
     - UP
 
   # Maximum number of trade 'slots' at any time (your USDT balance must be at least MAX_COINS * QUANTITY)
-  MAX_COINS: 4
+  MAX_COINS: 10
 
   # the amount of time in MINUTES to calculate the difference from the current price (minimum: 1).
-  TIME_DIFFERENCE: 2
+  TIME_DIFFERENCE: 5
 
   # Number of times to check for TP/SL during each TIME_DIFFERENCE (minimum: 1).
   # Don't spam the Binance API, you will be banned (max 1200 requests per minute per IP).
-  RECHECK_INTERVAL: 15
+  RECHECK_INTERVAL: 1
 
   # the difference in % between the first and second checks for the price.
   CHANGE_IN_PRICE: 3
 
   # define in % when to sell a coin that's not making a profit.
-  STOP_LOSS: 50
+  STOP_LOSS: 3
 
   # define in % when to take profit on a profitable coin.
-  TAKE_PROFIT: .8
+  TAKE_PROFIT: 6
 
   # Use custom tickers.txt list for filtering pairs.
   CUSTOM_LIST: True

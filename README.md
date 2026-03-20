@@ -1,46 +1,46 @@
 # Binance Volitility Trading Bot
 
 ## Description
-This Binance trading bot analyses the changes in price across all coins on Binance and place trades on the most volatile ones. 
-In addition to that, this Binance trading algorithm will also keep track of all the coins bought and sell them according to your specified Stop Loss and Take Profit.
+Este bot de trading para Binance analisa as variações de preço de todas as moedas na Binance e realiza operações nas mais voláteis.
+Além disso, o algoritmo mantém o controle de todas as moedas compradas e as vende conforme o Stop Loss e Take Profit definidos por você.
 
+O bot monitora as mudanças de preço em todas as moedas da Binance. Por padrão, apenas pares USDT são utilizados, excluindo pares de margem (como BTCDOWNUSDT) e pares Fiat.
 
+> As informações abaixo são exemplos e totalmente configuráveis
 
-The bot will listen to changes in price accross all coins on Binance. By default, we're only picking USDT pairs. We're excluding Margin (like BTCDOWNUSDT) and Fiat pairs
+- O bot verifica se alguma moeda subiu mais de 3% nos últimos 5 minutos
+- O bot compra 100 USDT das moedas mais voláteis da Binance
+- O bot vende ao atingir 6% de lucro ou 3% de stop loss
 
-> Information below is an example and is all configurable
+Você pode seguir o [guia do bot de volatilidade Binance](https://www.cryptomaton.org/2021/05/08/how-to-code-a-binance-trading-bot-that-detects-the-most-volatile-coins-on-binance/) para um passo a passo do desenvolvimento do bot (em inglês).
 
-- The bot checks if the any coin has gone up by more than 3% in the last 5 minutes
-- The bot will buy 100 USDT of the most volatile coins on Binance
-- The bot will sell at 6% profit or 3% stop loss
+## LEIA ANTES DE USAR
+1. Se você usar `TEST_MODE: False` no seu config, estará operando com DINHEIRO REAL.
+2. Para evitar isso, SEMPRE confira o item `TEST_MODE` no arquivo config.yml.
+3. Este é um framework para ser adaptado à sua estratégia, não uma solução pronta.
+4. Dependendo do mercado, a configuração padrão pode não operar muito, adapte para sua estratégia.
 
+## Uso
+Consulte nossas páginas wiki (em inglês):
 
-You can follow the [Binance volatility bot guide](https://www.cryptomaton.org/2021/05/08/how-to-code-a-binance-trading-bot-that-detects-the-most-volatile-coins-on-binance/) for a step-by-step walkthrough of the bot development.
+- [Guia de Instalação](https://github.com/CyberPunkMetalHead/Binance-volatility-trading-bot/wiki/Setup-Guide)
+- [Guia de Estratégia do Bot](https://github.com/CyberPunkMetalHead/Binance-volatility-trading-bot/wiki/Bot-Strategy-Guide)
+- [Guia de Configuração](https://github.com/CyberPunkMetalHead/Binance-volatility-trading-bot/wiki/Configuration)
 
-## READ BEFORE USE
-1. If you use the `TEST_MODE: False` in your config, you will be using REAL money.
-2. To ensure you do not do this, ALWAYS check the `TEST_MODE` configuration item in the config.yml file..
-3. This is a framework for users to modify and adapt to their overall strategy and needs, and in no way a turn-key solution.
-4. Depending on the current market, the default config might not do much, so you will have to adapt it to your own strategy.
+## Rodando
+- Iniciar env
+''source .venv/bin/activate
+- Rodar python3 detectedMooning.py
+- Rodar testes unitários python3 -m unittest test_detectMoonings.py
 
-## Usage
-Please checkout our wiki pages:
+## Solução de Problemas
 
-- [Setup Guide](https://github.com/CyberPunkMetalHead/Binance-volatility-trading-bot/wiki/Setup-Guide)
-- [Bot Strategy Guide](https://github.com/CyberPunkMetalHead/Binance-volatility-trading-bot/wiki/Bot-Strategy-Guide)
-- [Configuration Guide](https://github.com/CyberPunkMetalHead/Binance-volatility-trading-bot/wiki/Configuration)
+1. Leia o [FAQ](FAQ.md)
+2. Abra uma issue ou acesse o canal `#troubleshooting` no [Discord](https://discord.gg/buD27Dmvu3) 🚀
+    - Não faça spam, não seja rude, este é um projeto open source, não um trabalho em tempo integral.
 
-## Troubleshooting
-
-1. Read the [FAQ](FAQ.md)
-2. Open an issue / check us out on `#troubleshooting` at [Discord](https://discord.gg/buD27Dmvu3) 🚀 
-    - Do not spam, do not berate, we are all humans like you, this is an open source project, not a full time job. 
-
-## 💥 Disclaimer
-
-All investment strategies and investments involve risk of loss. 
-**Nothing contained in this program, scripts, code or repository should be construed as investment advice.**
-Any reference to an investment's past or potential performance is not, 
-and should not be construed as, a recommendation or as a guarantee of 
-any specific outcome or profit.
-By using this program you accept all liabilities, and that no claims can be made against the developers or others connected with the program.
+## 💥 Aviso Legal
+Todas as estratégias de investimento envolvem risco de perda.
+**Nada neste programa, scripts, código ou repositório deve ser interpretado como conselho de investimento.**
+Qualquer referência a desempenho passado ou potencial não é, e não deve ser interpretada como, recomendação ou garantia de qualquer resultado ou lucro específico.
+Ao usar este programa, você aceita toda a responsabilidade e não poderá fazer reivindicações contra os desenvolvedores ou outros envolvidos no projeto.

@@ -1,3 +1,4 @@
+
 """
 Disclaimer
 
@@ -93,6 +94,15 @@ class St_ampe_dOut:
 
 sys.stdout = St_ampe_dOut()
 
+# Proteção contra dump rápido
+def is_fast_dump(prices, threshold_drop, window):
+    '''Verifica se houve dump rápido após pump.'''
+    if len(prices) < window:
+        return False
+    max_price = max(prices[-window:])
+    last_price = prices[-1]
+    drop = ((max_price - last_price) / max_price) * 100
+    return drop >= threshold_drop
 
 def get_price(add_to_historical=True):
     '''Return the current price for all coins on binance'''
@@ -151,32 +161,37 @@ def wait_for_price():
     for coin in historical_prices[hsp_head]:
 
         # minimum and maximum prices over time period
+
         min_price = min(historical_prices, key = lambda x: float("inf") if x is None else float(x[coin]['price']))
         max_price = max(historical_prices, key = lambda x: -1 if x is None else float(x[coin]['price']))
-
         threshold_check = (-1.0 if min_price[coin]['time'] > max_price[coin]['time'] else 1.0) * (float(max_price[coin]['price']) - float(min_price[coin]['price'])) / float(min_price[coin]['price']) * 100
 
-        # each coin with higher gains than our CHANGE_IN_PRICE is added to the volatile_coins dict if less than MAX_COINS is not reached.
-        if threshold_check > CHANGE_IN_PRICE:
-            coins_up +=1
+        # Coleta preços recentes para dump check
+        recent_prices = [float(h[coin]['price']) for h in historical_prices if coin in h]
 
+        # Proteção contra dump rápido
+        if threshold_check > CHANGE_IN_PRICE:
+            # Lê parâmetros do config
+            fast_dump_cfg = config['trading_options'].get('FAST_DUMP_PROTECTION', {})
+            fast_dump_enabled = fast_dump_cfg.get('ENABLED', True)
+            threshold_drop = fast_dump_cfg.get('THRESHOLD_DROP', 2)
+            window = fast_dump_cfg.get('WINDOW', 3)
+            if fast_dump_enabled and is_fast_dump(recent_prices, threshold_drop=threshold_drop, window=window):
+                print(f'{txcolors.WARNING}{coin} ignorada devido a possível dump rápido após pump.{txcolors.DEFAULT}')
+                continue
+            coins_up +=1
             if coin not in volatility_cooloff:
                 volatility_cooloff[coin] = datetime.now() - timedelta(minutes=TIME_DIFFERENCE)
-
             # only include coin as volatile if it hasn't been picked up in the last TIME_DIFFERENCE minutes already
             if datetime.now() >= volatility_cooloff[coin] + timedelta(minutes=TIME_DIFFERENCE):
                 volatility_cooloff[coin] = datetime.now()
-
                 if len(coins_bought) + len(volatile_coins) < MAX_COINS or MAX_COINS == 0:
                     volatile_coins[coin] = round(threshold_check, 3)
                     print(f'{coin} has gained {volatile_coins[coin]}% within the last {TIME_DIFFERENCE} minutes, calculating volume in {PAIR_WITH}')
-
                 else:
                     print(f'{txcolors.WARNING}{coin} has gained {round(threshold_check, 3)}% within the last {TIME_DIFFERENCE} minutes, but you are holding max number of coins{txcolors.DEFAULT}')
-
         elif threshold_check < CHANGE_IN_PRICE:
             coins_down +=1
-
         else:
             coins_unchanged +=1
 
