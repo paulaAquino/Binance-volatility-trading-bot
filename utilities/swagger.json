@@ -1,0 +1,501 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/binance/balance": {
+            "get": {
+                "description": "Retorna todos os saldos de todos os ativos na conta Binance",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Binance"
+                ],
+                "summary": "Consulta todos os saldos atuais da Binance",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.BalancesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/binance/total_balance": {
+            "get": {
+                "description": "Retorna o saldo total estimado em USD somando todos os ativos convertidos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Binance"
+                ],
+                "summary": "Consulta saldo total estimado em USD",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.TotalBalanceResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/logs": {
+            "get": {
+                "description": "Retorna as últimas N linhas do arquivo de log (padrão: 100)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Logs"
+                ],
+                "summary": "Get application logs",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Número de linhas a serem retornadas",
+                        "name": "lines",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "description": "Returns all saved orders from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List all orders",
+                "responses": {
+                    "200": {
+                        "description": "List of order objects",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/orders.OrderResult"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rounds": {
+            "get": {
+                "description": "Retorna todas as rodadas de saldo já registradas",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rounds"
+                ],
+                "summary": "Consulta todas as rodadas",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/balance.Round"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rounds/current/efficiency": {
+            "get": {
+                "description": "Retorna o fator de lucro (eficiência) da rodada aberta. Se saldo_final não existir, usa o saldo atual total da Binance.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rounds"
+                ],
+                "summary": "Eficiência da rodada atual",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.EfficiencyResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rounds/day": {
+            "get": {
+                "description": "Retorna todas as rodadas de saldo para o dia informado (YYYY-MM-DD)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rounds"
+                ],
+                "summary": "Consulta rounds por dia",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dia no formato YYYY-MM-DD",
+                        "name": "day",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/balance.Round"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rounds/efficiency": {
+            "get": {
+                "description": "Retorna o fator de lucro (eficiência) de todas as rodadas fechadas",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rounds"
+                ],
+                "summary": "Eficiência de todas as rodadas fechadas",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/balance.RoundEfficiency"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rounds/open": {
+            "get": {
+                "description": "Retorna a rodada de saldo atualmente aberta",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rounds"
+                ],
+                "summary": "Consulta rodada em aberto",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/balance.Round"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rounds/winrate": {
+            "get": {
+                "description": "Retorna o win rate (proporção de rodadas fechadas com saldo final maior que o inicial)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rounds"
+                ],
+                "summary": "Consulta win rate do robô",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.WinRateResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/signals/last": {
+            "get": {
+                "description": "Retorna o último sinal gerado para cada par monitorado",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Signals"
+                ],
+                "summary": "Últimos sinais por par",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.LastSignalsBySymbolResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/start": {
+            "post": {
+                "description": "Ativa o processamento dos workers do bot e registra saldo inicial",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Control"
+                ],
+                "summary": "Inicia o bot",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/status": {
+            "get": {
+                "description": "Retorna se o bot está rodando ou parado",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Control"
+                ],
+                "summary": "Status do bot",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stop": {
+            "post": {
+                "description": "Pausa o processamento dos workers do bot e registra saldo final",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Control"
+                ],
+                "summary": "Pausa o bot",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.BalancesResponse": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "number",
+                "format": "float64"
+            }
+        },
+        "api.EfficiencyResponse": {
+            "type": "object",
+            "properties": {
+                "efficiency": {
+                    "type": "number"
+                }
+            }
+        },
+        "api.LastSignalsBySymbolResponse": {
+            "type": "object",
+            "properties": {
+                "signal": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.TotalBalanceResponse": {
+            "type": "object",
+            "properties": {
+                "totalUSD": {
+                    "type": "number"
+                }
+            }
+        },
+        "api.WinRateResponse": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer"
+                },
+                "winrate": {
+                    "type": "number"
+                },
+                "wins": {
+                    "type": "integer"
+                }
+            }
+        },
+        "balance.Round": {
+            "type": "object",
+            "properties": {
+                "dataHoraFim": {
+                    "type": "string"
+                },
+                "dataHoraInicio": {
+                    "type": "string"
+                },
+                "duracao": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "moedas": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "saldoFinal": {
+                    "type": "number"
+                },
+                "saldoInicial": {
+                    "type": "number"
+                },
+                "status": {
+                    "$ref": "#/definitions/balance.RoundStatus"
+                }
+            }
+        },
+        "balance.RoundEfficiency": {
+            "type": "object",
+            "properties": {
+                "efficiency": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "saldoFinal": {
+                    "type": "number"
+                },
+                "saldoInicial": {
+                    "type": "number"
+                }
+            }
+        },
+        "balance.RoundStatus": {
+            "type": "string",
+            "enum": [
+                "open",
+                "closed"
+            ],
+            "x-enum-varnames": [
+                "StatusOpen",
+                "StatusClosed"
+            ]
+        },
+        "orders.OrderResult": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "side": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        }
+    }
+}
